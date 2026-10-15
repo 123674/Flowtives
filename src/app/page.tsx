@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, FileText, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
+import Link from 'next/link'
 
 const plans = [
   { time: '05:00 PM', title: 'Badminton', detail: 'Move your body · 60 min', color: 'mint', icon: '🏸' },
@@ -25,21 +26,21 @@ export default function Home() {
       <div className="sky-image" aria-hidden="true" />
       <div className="sky-wash" aria-hidden="true" />
       <header className="nav-wrap">
-        <a className="wordmark" href="#top" aria-label="Flowtives home">flowtives<span className="wordmark-dot">.</span></a>
+        <Link className="wordmark" href="#top" aria-label="Flowtives home">Flowtives</Link>
         <nav className={`${menuOpen ? 'nav-links nav-links-open' : 'nav-links'}`}>
-          <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
-          <a href="#your-day" onClick={() => setMenuOpen(false)}>Your day</a>
-          <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
+          <Link href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</Link>
+          <Link href="#your-day" onClick={() => setMenuOpen(false)}>Your day</Link>
+          <Link href="#features" onClick={() => setMenuOpen(false)}>Features</Link>
         </nav>
-        <div className="nav-actions"><a className="nav-login" href="#planner">Sign in</a><button className="nav-cta" onClick={startPlanning}>Try Flowtives <ArrowUpRight size={15}/></button></div>
+        <div className="nav-actions"><Link className="nav-login" href="#planner">Sign in</Link><button className="nav-cta" onClick={startPlanning}>Try Flowtives <ArrowUpRight size={15}/></button></div>
         <button className="mobile-menu" aria-label="Toggle menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22}/> : <Menu size={22}/>}</button>
       </header>
 
       <section id="top" className="hero-content">
         <div className="eyebrow"><span className="eyebrow-spark"><Sparkles size={13}/></span> YOUR TIME, IN FLOW</div>
-        <h1>A little more flow.<br/><span>A lot more you.</span></h1>
+        <h1>Find yourself,<br/><span>In time.</span></h1>
         <p className="hero-subtitle">Your AI calendar for college, life, and everything in between.</p>
-        <div className="hero-buttons"><button className="primary-button" onClick={startPlanning}>Plan my day <span className="button-arrow"><ArrowRight size={19}/></span></button><a href="#how-it-works" className="text-button">See how it works <ArrowUpRight size={15}/></a></div>
+        <div className="hero-buttons"><button className="primary-button" onClick={startPlanning}>Plan my day <span className="button-arrow"><ArrowRight size={19}/></span></button><Link href="#how-it-works" className="text-button">See how it works <ArrowUpRight size={15}/></Link></div>
         <div className="hero-proof"><div className="avatar-stack"><span>J</span><span>A</span><span>M</span></div><span>Made for busy minds, not busywork.</span></div>
       </section>
 
@@ -65,8 +66,8 @@ export default function Home() {
           <div className="schedule-bottom"><span><CalendarDays size={14}/> 3 of 5 plans shown</span><button onClick={() => { setToast(true); window.setTimeout(() => setToast(false), 2800) }}>View full day <ArrowRight size={14}/></button></div>
         </div>
 
-        <div className="glass-card focus-card"><div className="focus-orbit"><div className="orbit-ring"/><div className="focus-center"><Sparkles size={23}/></div></div><div><strong>Balance, not burnout.</strong><span>Study time + life time, in sync.</span></div></div>
-        <div className="floating-pill pill-bottom"><span className="pill-check"><Check size={12}/></span> Your plan adapts as life happens</div>
+        
+        
       </section>
 
       <div className="bottom-fade" aria-hidden="true"/>
