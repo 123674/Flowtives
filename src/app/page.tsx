@@ -32,7 +32,7 @@ export default function Home() {
           <Link href="#your-day" onClick={() => setMenuOpen(false)}>Your day</Link>
           <Link href="#features" onClick={() => setMenuOpen(false)}>Features</Link>
         </nav>
-        <div className="nav-actions"><Link className="nav-login" href="#planner">Sign in</Link><button className="nav-cta" onClick={startPlanning}>Try Flowtives <ArrowUpRight size={15}/></button></div>
+        <div className="nav-actions"><Link className="nav-login" href="/signin">Sign in</Link><button className="nav-cta" onClick={startPlanning}>Try Flowtives <ArrowUpRight size={15}/></button></div>
         <button className="mobile-menu" aria-label="Toggle menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22}/> : <Menu size={22}/>}</button>
       </header>
 
