@@ -72,7 +72,7 @@ export default function Home() {
 
       <div className="bottom-fade" aria-hidden="true"/>
       <section className="below-fold" id="how-it-works"><div className="section-label">LESS PLANNING. MORE LIVING.</div><h2>Your schedule should work for you.</h2><p>Drop in your timetable, tell Flowtives what matters, and let AI shape a realistic day around it.</p><div className="feature-row" id="features"><article><div className="feature-icon"><FileText size={19}/></div><h3>Give it the details</h3><p>Upload your class timetable and add the things you want to make time for.</p></article><article><div className="feature-icon"><Sparkles size={19}/></div><h3>Let AI connect the dots</h3><p>Flowtives builds a balanced plan with study blocks, breaks, and your life outside class.</p></article><article><div className="feature-icon"><MessageCircle size={19}/></div><h3>Change plans, easily</h3><p>Tell your AI what changed. Your calendar reshuffles without the stress.</p></article></div></section>
-      <footer><a className="wordmark" href="#top">flowtives<span className="wordmark-dot">.</span></a><span>Make time for what matters.</span><span>© 2026 Flowtives</span></footer>
+      <footer><a className="wordmark" href="#top">Flowtives<span className="wordmark-dot">.</span></a><span>Make time for what matters.</span><span>© 2026 Flowtives</span></footer>
       {toast && <div className="toast"><span className="toast-icon"><Check size={15}/></span><span><strong>You’re on your way.</strong><small>Schedule preview is ready to explore.</small></span><button aria-label="Dismiss" onClick={() => setToast(false)}><X size={15}/></button></div>}
     </main>
   )
