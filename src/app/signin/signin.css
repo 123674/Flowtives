@@ -244,7 +244,7 @@
     align-self: flex-start;
     gap: 7px;
     margin-top: -2px;
-    color: #606570;
+    color: #8caa06;
     font-size: 12px;
     line-height: 1.4;
     cursor: pointer;
@@ -265,44 +265,46 @@
 }
 
 /* Submit button */
+
 .signin-submit {
     width: 100%;
-    min-height: 47px;
+    min-height: 37px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 0;
     margin-top: 1px;
-    padding: 12px 16px;
-    border: 1px solid var(--signin-blue);
+    padding: 10px 16px;
+    border: none;
     border-radius: 9px;
-    background: var(--signin-blue);
+    background: #060113;
     color: #ffffff;
     font-family: inherit;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(93, 56, 190, 0.18);
     cursor: pointer;
-    transition:
-        background 150ms ease,
-        transform 150ms ease;
+    transition: background 150ms ease, box-shadow 150ms ease;
 }
 
 .signin-submit:hover {
-    background: var(--signin-blue-hover);
+    background: #011111;
+    box-shadow: 0 3px 7px rgba(93, 56, 190, 0.24);
 }
 
 .signin-submit:active {
-    transform: scale(0.99);
+    background: #060111;
 }
 
 .signin-submit:focus-visible {
-    outline: 3px solid rgba(52, 120, 246, 0.35);
+    outline: 3px solid rgba(128, 80, 245, 0.3);
     outline-offset: 3px;
 }
 
 .signin-submit span {
-    font-size: 16px;
+    display: none;
 }
+
 
 /* Error message */
 .signin-error {
