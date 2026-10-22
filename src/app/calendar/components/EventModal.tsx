@@ -28,11 +28,13 @@ export default function EventModal({ initial, onSave, onDelete, onClose }: Props
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   const dialogColors: Record<string, string> = {
-  lavender: '#F0EDFF',
+  lavender: '#E4DEFF',
   mint: '#E6F8EE',
   blue: '#E8F2FF',
   peach: '#FFF0E6',
   }
+
+  const selectedColor = dialogColors[color] ?? '#FFFFFF'
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -66,7 +68,7 @@ export default function EventModal({ initial, onSave, onDelete, onClose }: Props
   return (
     <Dialog onClose={onClose} labelledBy={`${uid}-h`}>
       <div className={s.dialogColorBg}
-      style={{ backgroundColor: dialogColors[color] ?? '#FFFFFF' }}>
+    style={{ '--selected-color': selectedColor } as React.CSSProperties}>
       <form className={s.modalForm} onSubmit={submit} noValidate>
         <div className={s.modalHead}>
           <h2 id={`${uid}-h`} className={s.modalTitle}>
