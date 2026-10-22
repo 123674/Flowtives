@@ -41,6 +41,13 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
   const suppressClick = useRef(false)
   const [draft, setDraft] = useState<{ key: string; a: number; b: number } | null>(null)
   const [drag, setDrag] = useState<{ id: string; date: string; start: number; end: number } | null>(null)
+  // Week-change transition: remember which way the user moved (1 = forward, -1 = back).
+  const [weekMs, setWeekMs] = useState(weekStart.getTime())
+  const [slide, setSlide] = useState<0 | 1 | -1>(0)
+  if (weekMs !== weekStart.getTime()) {
+    setSlide(weekStart.getTime() > weekMs ? 1 : -1)
+    setWeekMs(weekStart.getTime())
+  }
 
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart])
 
@@ -149,7 +156,12 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
 
   return (
     <div className={s.scroll} ref={scrollRef} data-dragging={drag || draft ? 'true' : undefined}>
-      <div className={s.gridInner}>
+      <div
+        className={`${s.gridInner} ${slide === 1 ? s.slideNext : slide === -1 ? s.slidePrev : ''}`}
+        onAnimationEnd={(e) => {
+          if (slide && e.animationName.includes('weekSlide')) setSlide(0)
+        }}
+      >
         <div className={s.corner}>{gmtLabel(nowTs)}</div>
         {days.map((d) => {
           const isToday = isSameDay(d, today)

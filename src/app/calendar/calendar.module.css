@@ -699,3 +699,20 @@
 @media (max-width: 650px) {
   .corner { font-size: 9px; letter-spacing: -0.2px; }
 }
+
+/* ---------- week change transition ---------- */
+.slideNext .dayHead > span,
+.slideNext .dayCol > .event { animation: weekSlideNext 0.26s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.slidePrev .dayHead > span,
+.slidePrev .dayCol > .event { animation: weekSlidePrev 0.26s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+/* keep sliding events inside their column so no scrollbar flashes */
+.slideNext .dayCol,
+.slidePrev .dayCol { overflow-x: clip; }
+@keyframes weekSlideNext {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes weekSlidePrev {
+  from { opacity: 0; transform: translateX(-28px); }
+  to { opacity: 1; transform: none; }
+}
