@@ -11,8 +11,8 @@
   --hour: 56px;
   --time-w: 60px;
   --col-min: 112px;
-  --grad: linear-gradient(135deg, #a09bff, #6355d8);
-  --grad-soft: linear-gradient(140deg, #9f9aff, #7c9fe7);
+  --grad:  #055fcd;
+  --grad-soft:#7c9fe7;
 
   position: relative;
   display: flex;
@@ -75,11 +75,11 @@
   font-weight: 650;
   transition: background 0.15s, transform 0.15s;
 }
-.primaryBtn { background: var(--navy); color: #fff; }
-.primaryBtn:hover { background: #25234e; transform: translateY(-1px); }
-.ghostBtn:hover { background: rgba(32, 43, 57, 0.06); }
+.primaryBtn { background: var(--violet); color: #fff; }
+.primaryBtn:hover { background: #2f2c64; transform: translateY(-2px); }
+.ghostBtn:hover { background: rgba(30, 40, 53, 0.06); transform: translateY(-2px); }
 .dangerBtn { color: #b4233a; padding: 0 10px; }
-.dangerBtn:hover { background: rgba(180, 35, 58, 0.08); }
+.dangerBtn:hover { background: rgba(185, 20, 47, 0.08); transform: translateY(-2px); }
 
 /* ---------- toolbar ---------- */
 .toolbar {
@@ -208,17 +208,18 @@
   font-size: 14px;
   font-weight: 700;
   box-shadow: 0 8px 24px rgba(26, 38, 91, 0.16);
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s;
 }
-.createBtn:hover { transform: translateY(-2px); background: #25234e; }
+.createBtn:hover { transform: translateY(-2px); background: #2c295e; }
 .createChip {
   display: grid;
   place-items: center;
   width: 34px;
   height: 32px;
   border-radius: 9px;
-  background: var(--grad);
+  background: var(--navy);
 }
+.createBtn:hover .createChip { background: #2c295e; }
 
 /* mini calendar */
 .mini { padding: 0 4px; }
@@ -311,7 +312,7 @@
   font-size: 22px;
   font-weight: 500;
 }
-.dayNumToday { background: var(--grad); color: #fff; font-weight: 700; box-shadow: 0 6px 16px rgba(99, 85, 216, 0.28); }
+.dayNumToday { background: var(--grad); color: #fff; font-weight: 700; }
 
 .timeCol {
   position: sticky;
@@ -406,6 +407,12 @@
 }
 
 /* ---------- dialogs ---------- */
+.dialogColorBg {
+  min-height: 100%;
+  transition: background-color 0.2s ease;
+  border-radius: inherit;
+}
+
 .dialog {
   width: min(440px, calc(100vw - 24px));
   max-height: calc(100dvh - 24px);
@@ -419,7 +426,20 @@
   box-shadow: 0 24px 64px rgba(32, 31, 75, 0.22);
 }
 .dialog::backdrop { background: rgba(32, 31, 75, 0.35); }
-.modalForm, .details { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: transparent;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
 .modalHead { display: flex; align-items: center; gap: 10px; }
 .modalTitle { flex: 1; margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -0.3px; }
 .field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
