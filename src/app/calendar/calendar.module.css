@@ -194,6 +194,7 @@
   overflow-y: auto;
 }
 .sidebarClose, .backdrop { display: none; }
+.sidebarTop, .sidebarBrand { display: none; }
 
 .createBtn {
   display: inline-flex;
@@ -513,35 +514,50 @@
 /* ---------- Plan with Flowtives ---------- */
 .aiTab {
   position: fixed;
-  right: 0;
-  top: 50%;
+  right: 24px;
+  bottom: 24px;
   z-index: 15;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 7px 14px;
-  border: 1px solid var(--line);
-  border-right: 0;
-  border-radius: 14px 0 0 14px;
-  background: #fff;
-  box-shadow: -6px 8px 24px rgba(30, 48, 64, 0.1);
-  color: var(--navy);
-  transition: padding 0.2s, box-shadow 0.2s;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--violet);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(32, 43, 57, 0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.aiTab:hover { padding-right: 10px; box-shadow: -8px 10px 28px rgba(99, 85, 216, 0.18); }
+.aiTab:hover { transform: translateY(-2px) scale(1.06); box-shadow: 0 8px 20px rgba(32, 43, 57, 0.28); }
+.aiTip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.aiTab:focus-visible .aiTip { opacity: 1; }
+@media (hover: hover) {
+  .aiTab:hover .aiTip { opacity: 1; }
+}
 .aiTabIcon {
   display: grid;
   place-items: center;
   width: 28px;
   height: 28px;
   border-radius: 9px;
-  background: var(--grad-soft);
+  background: var(--violet);
   color: #fff;
   flex-shrink: 0;
 }
-.aiTabText { writing-mode: vertical-rl; font-size: 12px; font-weight: 650; letter-spacing: 0.2px; }
 
 .aiPanel {
   position: fixed;
@@ -555,7 +571,7 @@
   border: 1px solid var(--line);
   border-radius: 18px;
   background: #fff;
-  box-shadow: 0 24px 64px rgba(32, 31, 75, 0.18);
+  box-shadow: 0 16px 40px rgba(32, 43, 57, 0.16);
   transform: translateX(calc(100% + 24px));
   visibility: hidden;
   transition: transform 0.25s ease, visibility 0s linear 0.25s;
@@ -567,35 +583,36 @@
 .aiHeadText small { font-size: 12px; color: var(--muted); }
 .aiLog { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 16px; }
 .aiBubble, .userBubble { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
-.aiBubble { background: #f3f2ff; border: 1px solid #e7e5fb; border-top-left-radius: 4px; align-self: flex-start; }
+.aiBubble { background: #f1f4f7; border: 1px solid var(--line); border-top-left-radius: 4px; align-self: flex-start; }
 .userBubble { background: var(--navy); color: #fff; border-top-right-radius: 4px; align-self: flex-end; }
 .aiAction {
   display: block;
   margin-top: 10px;
   padding: 8px 12px;
   border-radius: 9px;
-  background: #fff;
-  border: 1px solid #cdc9f7;
-  color: var(--violet);
+  background: var(--violet);
+  border: 0;
+  color: #fff;
   font-size: 13px;
   font-weight: 650;
+  transition: background 0.15s;
 }
-.aiAction:hover { background: var(--tint); }
+.aiAction:hover { background: #0074bb; }
 .aiThinking { display: flex; gap: 4px; padding: 14px; }
-.aiThinking i { width: 6px; height: 6px; border-radius: 50%; background: #9f9aff; animation: blink 1s infinite; }
+.aiThinking i { width: 6px; height: 6px; border-radius: 50%; background: var(--violet); animation: blink 1s infinite; }
 .aiThinking i:nth-child(2) { animation-delay: 0.15s; }
 .aiThinking i:nth-child(3) { animation-delay: 0.3s; }
 @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .chip {
   padding: 8px 12px;
-  border: 1px solid #d9dcf5;
+  border: 1px solid #cfd7df;
   border-radius: 999px;
   background: #fff;
   font-size: 13px;
   transition: background 0.15s, border-color 0.15s;
 }
-.chip:hover { background: var(--tint); border-color: #b9b4f5; }
+.chip:hover { background: var(--tint); border-color: var(--violet); }
 .aiForm { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
 .aiForm input {
   flex: 1;
@@ -607,8 +624,9 @@
   font-size: 14px;
   outline: none;
 }
-.aiForm input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(99, 85, 216, 0.14); }
-.sendBtn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--grad); color: #fff; flex-shrink: 0; }
+.aiForm input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(0, 132, 209, 0.16); }
+.sendBtn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--violet); color: #fff; flex-shrink: 0; transition: background 0.15s; }
+.sendBtn:hover:not(:disabled) { background: #0074bb; }
 .sendBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ---------- tablet: sidebar becomes a drawer ---------- */
@@ -643,7 +661,8 @@
     transition: transform 0.25s ease, visibility 0s linear 0.25s;
   }
   .sidebarOpen { transform: none; visibility: visible; transition: transform 0.25s ease; }
-  .sidebarClose { display: inline-grid; align-self: flex-end; margin-bottom: -8px; }
+  .sidebarTop { display: flex; align-items: center; margin-bottom: -8px; }
+  .sidebarClose { display: inline-grid; margin-left: auto; }
 }
 
 /* ---------- mobile ---------- */
@@ -665,23 +684,7 @@
   .hourLabel { font-size: 10px; right: 6px; }
   .fieldRow { flex-direction: column; gap: 16px; }
 
-  .aiTab {
-    top: auto;
-    right: 14px;
-    bottom: 18px;
-    transform: none;
-    padding: 0;
-    width: 52px;
-    height: 52px;
-    justify-content: center;
-    border: 0;
-    border-radius: 50%;
-    background: var(--grad-soft);
-    box-shadow: 0 10px 28px rgba(99, 85, 216, 0.35);
-  }
-  .aiTab:hover { padding: 0; }
-  .aiTab .aiTabIcon { background: transparent; width: 24px; height: 24px; }
-  .aiTabText { display: none; }
+  .aiTab { right: 16px; bottom: 16px; }
   .aiPanel {
     top: auto;
     left: 0;
@@ -715,4 +718,57 @@
 @keyframes weekSlidePrev {
   from { opacity: 0; transform: translateX(-28px); }
   to { opacity: 1; transform: none; }
+}
+
+/* ---------- event hover / focus tooltip (rendered in a portal, so no theme vars) ---------- */
+.eventTip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 10px 12px;
+  border: 1px solid #d5dce3;
+  border-radius: 10px;
+  background: #fff;
+  color: #201f4b;
+  box-shadow: 0 8px 24px rgba(32, 43, 57, 0.14);
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.eventTip strong { font-size: 13px; font-weight: 650; overflow-wrap: anywhere; }
+.eventTip span { font-size: 12px; color: #4b5565; }
+.eventTip p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #344054;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* narrow phones: keep Today, arrows, month, search and menu on one row */
+@media (max-width: 400px) {
+  .navBtns .iconBtn, .menuBtn, .search > .iconBtn { width: 32px; height: 32px; }
+  .todayBtn { padding: 0 10px; }
+  .monthTitle { font-size: 15px; }
+}
+
+/* Flowtives link inside the mobile sidebar drawer (toolbar wordmark is hidden at this width) */
+@media (max-width: 650px) {
+  .sidebarBrand {
+    display: block;
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -1.1px;
+    color: var(--ink);
+    text-decoration: none;
+  }
 }

@@ -87,11 +87,11 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekSta
   return (
     <>
       {!open && (
-        <button type="button" className={s.aiTab} onClick={onOpen} aria-expanded="false" aria-controls="flowtives-ai">
-          <span className={s.aiTabIcon}>
-            <Sparkles size={15} aria-hidden="true" />
+        <button type="button" className={s.aiTab} onClick={onOpen} aria-label="Plan with Flowtives" aria-expanded="false" aria-controls="flowtives-ai">
+          <Sparkles size={22} aria-hidden="true" />
+          <span className={s.aiTip} aria-hidden="true">
+            Plan with Flowtives
           </span>
-          <span className={s.aiTabText}>Plan with Flowtives</span>
         </button>
       )}
       <aside id="flowtives-ai" className={`${s.aiPanel} ${open ? s.aiPanelOpen : ''}`} aria-label="Plan with Flowtives" aria-hidden={!open}>

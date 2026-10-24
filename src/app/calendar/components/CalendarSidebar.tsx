@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Plus, X } from 'lucide-react'
 import s from '../calendar.module.css'
 import type { CalEvent } from '../lib'
@@ -20,9 +21,14 @@ export default function CalendarSidebar({ open, selected, today, events, onClose
     <>
       <div className={`${s.backdrop} ${open ? s.backdropOpen : ''}`} onClick={onClose} aria-hidden="true" />
       <aside id="calendar-sidebar" className={`${s.sidebar} ${open ? s.sidebarOpen : ''}`} aria-label="Calendar sidebar">
-        <button type="button" className={`${s.iconBtn} ${s.sidebarClose}`} aria-label="Close sidebar" onClick={onClose}>
-          <X size={18} />
-        </button>
+        <div className={s.sidebarTop}>
+          <Link href="/" className={s.sidebarBrand} aria-label="Flowtives home" onClick={onClose}>
+            Flowtives
+          </Link>
+          <button type="button" className={`${s.iconBtn} ${s.sidebarClose}`} aria-label="Close sidebar" onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
         <button type="button" className={s.createBtn} onClick={onCreate}>
           <span className={s.createChip}>
             <Plus size={16} aria-hidden="true" />
