@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, FileText, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, Coffee, FileText, Heart, ListPlus, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
+import DayDemo from './components/DayDemo'
+import Faq from './components/Faq'
 
 const plans = [
   { time: '05:00 PM', title: 'Badminton', detail: 'Move your body · 60 min', color: 'mint', icon: '🏸' },
@@ -58,7 +60,7 @@ export default function Home() {
           <div className="card-foot"><span><Check size={12}/> Keeps your priorities in mind</span><span><Clock3 size={12}/> Takes a minute</span></div>
         </div>
 
-        <div className="glass-card schedule-card" id="your-day">
+        <div className="glass-card schedule-card" id="schedule-preview">
           <div className="schedule-top"><div><div className="schedule-kicker">YOUR PERSONAL PLAN</div><h3>Today, in flow <span className="sun">✳</span></h3></div><div className="date-chip">THU <strong>15</strong></div></div>
           <div className="day-progress"><span>YOUR DAY</span><div><i/></div><strong>68%</strong></div>
           <div className="schedule-list">{plans.map((plan) => <div className="schedule-item" key={plan.title}><span className="time-label">{plan.time}</span><div className={`event-icon ${plan.color}`}>{plan.icon}</div><div className="event-text"><strong>{plan.title}</strong><small>{plan.detail}</small></div><Check className="event-check" size={15}/></div>)}</div>
@@ -71,8 +73,62 @@ export default function Home() {
       </section>
 
       <div className="bottom-fade" aria-hidden="true"/>
-      <section className="below-fold" id="how-it-works"><div className="section-label">LESS PLANNING. MORE LIVING.</div><h2>Your schedule should work for you.</h2><p>Drop in your timetable, tell Flowtives what matters, and let AI shape a realistic day around it.</p><div className="feature-row" id="features"><article><div className="feature-icon"><FileText size={19}/></div><h3>Give it the details</h3><p>Upload your class timetable and add the things you want to make time for.</p></article><article><div className="feature-icon"><Sparkles size={19}/></div><h3>Let AI connect the dots</h3><p>Flowtives builds a balanced plan with study blocks, breaks, and your life outside class.</p></article><article><div className="feature-icon"><MessageCircle size={19}/></div><h3>Change plans, easily</h3><p>Tell your AI what changed. Your calendar reshuffles without the stress.</p></article></div></section>
-      <footer><a className="wordmark" href="#top">Flowtives<span className="wordmark-dot">.</span></a><span>Make time for what matters.</span><span>© 2026 Flowtives</span></footer>
+      <section className="below-fold landing-section how-section" id="how-it-works"><div className="section-label">LESS PLANNING. MORE LIVING.</div><h2>Your schedule should work for you.</h2><p>Drop in your timetable, tell Flowtives what matters, and let AI shape a realistic day around it.</p><div className="feature-row"><article><span className="step-number">1</span><div className="feature-icon"><FileText size={19}/></div><h3>Give it the details</h3><p>Upload your class timetable and add the things you want to make time for.</p></article><article><span className="step-number">2</span><div className="feature-icon"><Sparkles size={19}/></div><h3>Let AI connect the dots</h3><p>Flowtives builds a balanced plan with study blocks, breaks, and your life outside class.</p></article><article><span className="step-number">3</span><div className="feature-icon"><MessageCircle size={19}/></div><h3>Change plans, easily</h3><p>Tell your AI what changed. Your calendar reshuffles without the stress.</p></article></div></section>
+
+      <section className="landing-section your-day-section" id="your-day">
+        <div className="day-layout">
+          <div className="day-copy">
+            <div className="section-label">A PLAN THAT CAN FLEX</div>
+            <h2>Your day, your call.</h2>
+            <p>Start with a thoughtful plan, then shape it around what actually works for you.</p>
+            <ul className="reassurance-list">
+              <li><Check size={16}/> Change or remove any task</li>
+              <li><Check size={16}/> Add the things you care about</li>
+              <li><Check size={16}/> Keep breaks and downtime in view</li>
+            </ul>
+          </div>
+          <DayDemo initialTasks={plans.map((plan, index) => ({ ...plan, id: `demo-${index + 1}` }))}/>
+        </div>
+      </section>
+
+      <section className="landing-section feature-section" id="features">
+        <div className="section-label">BUILT AROUND REAL LIFE</div>
+        <h2>More than a calendar.</h2>
+        <p className="section-description">A flexible plan that makes space for classes, priorities, and everything else.</p>
+        <div className="feature-grid">
+          <article><div className="feature-icon"><CalendarDays size={19}/></div><h3>Schedule around classes</h3><p>Build your day around the timetable you already have.</p></article>
+          <article><div className="feature-icon"><Coffee size={19}/></div><h3>Study, then reset</h3><p>Make room for focused study blocks and proper breaks.</p></article>
+          <article><div className="feature-icon"><MessageCircle size={19}/></div><h3>Edit by chatting</h3><p>Explain what changed and reshape your plan in a few words.</p></article>
+          <article><div className="feature-icon"><ListPlus size={19}/></div><h3>Make it yours</h3><p>Add, remove, or reshuffle tasks when your priorities shift.</p></article>
+          <article><div className="feature-icon"><Heart size={19}/></div><h3>Balance energy and downtime</h3><p>Plan for your energy, not just an endless list of tasks.</p></article>
+          <article><div className="feature-icon"><FileText size={19}/></div><h3>Use the timetable you have</h3><p>Upload a PDF, image, or spreadsheet to get started.</p></article>
+        </div>
+      </section>
+
+      <section className="landing-section students-section">
+        <div className="section-label">MADE FOR STUDENTS</div>
+        <h2>College is more than class.</h2>
+        <div className="students-grid">
+          {/* // TODO(me): Replace these placeholder statements with approved student-focused copy. */}
+          <article className="stat-card"><h3>Make room for your people.</h3><p>Your schedule should leave space for life outside class.</p></article>
+          <article className="stat-card"><h3>Protect time to recharge.</h3><p>Rest belongs in a realistic plan, too.</p></article>
+          <article className="stat-card"><h3>Keep your own priorities close.</h3><p>Build a week that reflects what matters to you.</p></article>
+        </div>
+      </section>
+
+      <section className="landing-section faq-section" id="faq">
+        <div className="section-label">GOOD QUESTIONS</div>
+        <h2>A few things to know.</h2>
+        <Faq />
+      </section>
+
+      <section className="landing-section cta-band">
+        <h2>Make time for what matters.</h2>
+        <p>Start with your timetable. Make the plan your own.</p>
+        <button className="primary-button" onClick={startPlanning}>Plan my day <ArrowRight size={17}/></button>
+      </section>
+
+      <footer className="landing-footer"><a className="wordmark" href="#top">Flowtives<span className="wordmark-dot">.</span></a><span>Make time for what matters.</span><nav aria-label="Footer"><a href="#how-it-works">How it works</a><a href="#your-day">Your day</a><a href="#features">Features</a></nav><span>© 2026 Flowtives</span></footer>
       {toast && <div className="toast"><span className="toast-icon"><Check size={15}/></span><span><strong>You’re on your way.</strong><small>Schedule preview is ready to explore.</small></span><button aria-label="Dismiss" onClick={() => setToast(false)}><X size={15}/></button></div>}
     </main>
   )
