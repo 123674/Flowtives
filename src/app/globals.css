@@ -1605,7 +1605,6 @@ footer > span:last-child {
 .bottom-fade {
   height: 56px;
   margin-top: 0;
-  border-radius: 48px 48px 0 0;
   background: #f7f8ff;
 }
 
@@ -1686,15 +1685,19 @@ footer > span:last-child {
 }
 
 .your-day-section {
-  text-align: left;
+  text-align: center;
 }
 
 .day-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 48px;
   max-width: 1100px;
+  margin: 0 auto;
+}
+
+.day-copy {
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -1712,7 +1715,8 @@ footer > span:last-child {
 .reassurance-list {
   display: grid;
   gap: 14px;
-  margin: 26px 0 0;
+  width: fit-content;
+  margin: 26px auto 0;
   padding: 0;
   color: #20284c;
   font-size: 14px;
@@ -2062,6 +2066,7 @@ footer > span:last-child {
 }
 
 .landing-footer {
+  position: relative;
   color: #5a6080;
 }
 
@@ -2069,7 +2074,9 @@ footer > span:last-child {
   display: flex;
   align-items: center;
   gap: 18px;
-  margin-left: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .landing-footer nav a {
@@ -2092,11 +2099,6 @@ footer > span:last-child {
 }
 
 @media (max-width: 900px) {
-  .day-layout {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: 26px;
-  }
-
   .day-demo {
     padding: 20px;
   }
@@ -2185,7 +2187,9 @@ footer > span:last-child {
     grid-row: 2;
     flex-wrap: wrap;
     gap: 14px;
-    margin-left: 0;
+    position: static;
+    justify-self: center;
+    transform: none;
   }
 
   .landing-footer > span:last-child {

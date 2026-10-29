@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, Coffee, FileText, Heart, ListPlus, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
-import DayDemo from './components/DayDemo'
 import Faq from './components/Faq'
 
 const plans = [
@@ -87,7 +86,6 @@ export default function Home() {
               <li><Check size={16}/> Keep breaks and downtime in view</li>
             </ul>
           </div>
-          <DayDemo initialTasks={plans.map((plan, index) => ({ ...plan, id: `demo-${index + 1}` }))}/>
         </div>
       </section>
 
@@ -117,7 +115,7 @@ export default function Home() {
       </section>
 
       <section className="landing-section faq-section" id="faq">
-        <div className="section-label">GOOD QUESTIONS</div>
+        <div className="section-label">FAQs</div>
         <h2>A few things to know.</h2>
         <Faq />
       </section>
