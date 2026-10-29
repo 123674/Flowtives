@@ -182,6 +182,7 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
         </div>
 
         {days.map((d, i) => {
+          console.log("days",d,i);
           const key = toKey(d)
           const isToday = isSameDay(d, today)
           const laid = layoutDay(shown.filter((e) => e.date === key))
