@@ -102,10 +102,6 @@ export default function CalendarPage() {
               focusReq={focusReq}
               onCreate={(date, start, end) => setModal({ kind: 'form', draft: blankDraft(date, start, end) })}
               onOpen={(id) => setModal({ kind: 'view', id })}
-              onMove={(id, date, start, end) => {
-                const ev = events.find((e) => e.id === id)
-                if (ev) upsert({ ...ev, date, start, end })
-              }}
             />
           </div>
         </main>
