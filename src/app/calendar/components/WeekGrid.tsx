@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import s from '../calendar.module.css'
 import {
   HOUR_PX,
@@ -29,15 +29,11 @@ interface Props {
   onOpen: (id: string) => void
 }
 
-const SNAP = 15
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v))
 const HOURS = Array.from({ length: 24 }, (_, h) => h)
 
 export default function WeekGrid({ weekStart, today, nowTs, events, highlightId, focusReq, onCreate, onOpen }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const lastPointer = useRef<string>('mouse')
-  const suppressClick = useRef(false)
-  const [draft, setDraft] = useState<{ key: string; a: number; b: number } | null>(null)
   // Week-change transition: remember which way the user moved (1 = forward, -1 = back).
   const [weekMs, setWeekMs] = useState(weekStart.getTime())
   const [slide, setSlide] = useState<0 | 1 | -1>(0)
@@ -61,59 +57,19 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
   const nowDate = new Date(nowTs)
   const nowMin = nowDate.getHours() * 60 + nowDate.getMinutes()
 
-  /* ----- drag to create (mouse / pen). Touch uses a simple tap. ----- */
-  const colPointerDown = (e: PointerEvent<HTMLDivElement>, key: string) => {
-    lastPointer.current = e.pointerType
-    if (e.pointerType === 'touch' || e.button !== 0 || e.target !== e.currentTarget) return
-    const col = e.currentTarget
-    const y0 = e.clientY
-    const minuteAt = (y: number) => clamp(Math.floor(((y - col.getBoundingClientRect().top) / HOUR_PX) * 60 / SNAP) * SNAP, 0, 1425)
-    const a = minuteAt(y0)
-    let b = a
-    let moved = false
-    const move = (m: globalThis.PointerEvent) => {
-      if (!moved && Math.abs(m.clientY - y0) < 5) return
-      moved = true
-      b = minuteAt(m.clientY)
-      setDraft({ key, a, b })
-    }
-    const up = () => {
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      setDraft(null)
-      suppressClick.current = true
-      if (moved) {
-        onCreate(key, fromMin(Math.min(a, b)), fromMin(Math.min(Math.max(a, b) + SNAP, 1439)))
-      } else {
-        const st = Math.floor(a / 30) * 30
-        onCreate(key, fromMin(st), fromMin(Math.min(st + 60, 1439)))
-      }
-    }
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', up)
-  }
-
   const colClick = (e: MouseEvent<HTMLDivElement>, key: string) => {
-    if (suppressClick.current) {
-      suppressClick.current = false
-      return
-    }
-    if (lastPointer.current !== 'touch' || e.target !== e.currentTarget) return
+    if (e.target !== e.currentTarget) return
     const y = e.clientY - e.currentTarget.getBoundingClientRect().top
     const st = clamp(Math.floor(((y / HOUR_PX) * 60) / 30) * 30, 0, 1380)
     onCreate(key, fromMin(st), fromMin(st + 60))
   }
 
   const openEvent = (id: string) => {
-    if (suppressClick.current) {
-      suppressClick.current = false
-      return
-    }
     onOpen(id)
   }
 
   return (
-    <div className={s.scroll} ref={scrollRef} data-dragging={draft ? 'true' : undefined}>
+    <div className={s.scroll} ref={scrollRef}>
       <div
         className={`${s.gridInner} ${slide === 1 ? s.slideNext : slide === -1 ? s.slidePrev : ''}`}
         onAnimationEnd={(e) => {
@@ -149,7 +105,6 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
               role="group"
               aria-label={longDate(d)}
               className={`${s.dayCol} ${isToday ? s.dayColToday : ''}`}
-              onPointerDown={(e) => colPointerDown(e, key)}
               onClick={(e) => colClick(e, key)}
             >
               {laid.map(({ ev, col, cols }) => {
@@ -168,15 +123,6 @@ export default function WeekGrid({ weekStart, today, nowTs, events, highlightId,
                   />
                 )
               })}
-              {draft && draft.key === key && (
-                <div
-                  className={s.draft}
-                  style={{
-                    top: (Math.min(draft.a, draft.b) / 60) * HOUR_PX,
-                    height: ((Math.abs(draft.b - draft.a) + SNAP) / 60) * HOUR_PX,
-                  }}
-                />
-              )}
               {isToday && <div className={s.nowLine} style={{ top: (nowMin / 60) * HOUR_PX }} aria-hidden="true" />}
             </div>
           )

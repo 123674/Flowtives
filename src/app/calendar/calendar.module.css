@@ -269,7 +269,6 @@
   overflow: hidden;
 }
 .scroll { flex: 1; min-width: 0; overflow: auto; overscroll-behavior: contain; position: relative; }
-.scroll[data-dragging='true'] { user-select: none; cursor: grabbing; }
 .gridInner {
   display: grid;
   grid-template-columns: var(--time-w) repeat(7, minmax(var(--col-min), 1fr));
@@ -357,16 +356,6 @@
   height: 10px;
   border-radius: 50%;
   background: var(--violet);
-}
-.draft {
-  position: absolute;
-  left: 2px;
-  right: 3px;
-  border-radius: 8px;
-  border: 1.5px dashed var(--violet);
-  background: rgba(159, 154, 255, 0.16);
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* ---------- events ---------- */
