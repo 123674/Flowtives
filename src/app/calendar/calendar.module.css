@@ -269,7 +269,6 @@
   overflow: hidden;
 }
 .scroll { flex: 1; min-width: 0; overflow: auto; overscroll-behavior: contain; position: relative; }
-.scroll[data-dragging='true'] { user-select: none; cursor: grabbing; }
 .gridInner {
   display: grid;
   grid-template-columns: var(--time-w) repeat(7, minmax(var(--col-min), 1fr));
@@ -358,16 +357,6 @@
   border-radius: 50%;
   background: var(--violet);
 }
-.draft {
-  position: absolute;
-  left: 2px;
-  right: 3px;
-  border-radius: 8px;
-  border: 1.5px dashed var(--violet);
-  background: rgba(159, 154, 255, 0.16);
-  pointer-events: none;
-  z-index: 1;
-}
 
 /* ---------- events ---------- */
 .ev_lavender { --bg: #ece9ff; --bar: #7b6df0; --tx: #342b8c; }
@@ -390,11 +379,10 @@
   text-align: left;
   font-size: 12px;
   line-height: 1.3;
-  cursor: grab;
+  cursor: pointer;
   transition: box-shadow 0.15s, transform 0.15s;
 }
 .event:hover { z-index: 3; box-shadow: 0 6px 16px rgba(32, 43, 57, 0.14); transform: translateY(-1px); }
-.eventDragging { z-index: 5; box-shadow: 0 10px 24px rgba(32, 43, 57, 0.22); opacity: 0.92; }
 .eventTitle { font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .eventTime { font-size: 11px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .eventDesc { margin-top: 2px; font-size: 11px; opacity: 0.8; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
