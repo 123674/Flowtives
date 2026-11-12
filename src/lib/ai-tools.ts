@@ -4,72 +4,50 @@ import { Type, type FunctionDeclaration } from "@google/genai";
 import { z } from "zod";
 
 export const functionDeclarations: FunctionDeclaration[] = [
-    {
-        name: "get_my_events",
-        description: "List events the current user registered for.",
-        parameters: {
-            type: Type.OBJECT,
-            properties: {
-                limit: {
-                    type: Type.INTEGER,
-                    description: "Maximum results, 1-20",
-                },
-                date: {
-                    type: Type.STRING,
-                    description:
-                        "Optional date range, format yyyy-mm-dd->yyyy-mm-dd",
-                },
-                time: {
-                    type: Type.STRING,
-                    description:
-                        "Optional time range, format hh:mm->hh:mm",
-                },
-                meta: {
-                    type: Type.OBJECT,
-                    description: "Additional event data fields.",
-                    properties: {
-                        id: {
-                            type: Type.STRING,
-                            description: "Event unique ID",
-                        },
-                        date: {
-                            type: Type.STRING,
-                            description: "Event date, format YYYY-MM-DD",
-                        },
-                        title: {
-                            type: Type.STRING,
-                            description: "Event title",
-                        },
-                        description: {
-                            type: Type.STRING,
-                            description: "Event description",
-                        },
-                        start: {
-                            type: Type.STRING,
-                            description: "Event start time, format HH:mm",
-                        },
-                        end: {
-                            type: Type.STRING,
-                            description: "Event end time, format HH:mm",
-                        },
-                        color: {
-                            type: Type.STRING,
-                            description: "Event color scheme",
-                        },
-                    },
-                },
-            },
+  {
+    name: "get_my_events",
+    description: "List events the current user registered for.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        limit: {
+          type: Type.INTEGER,
+          description:
+            "Maximum results to return, between 1 and 20. Default to 10 if not specified.",
         },
+        date: {
+          type: Type.STRING,
+          description:
+            "Date range in the format YYYY-MM-DD-HH:MM->YYYY-MM-DD-HH:MM-. Use 'all' if no date range is specified.",
+        },
+        fields: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.STRING,
+            enum: ["title", "description", "start_date", "end_date", "time", "location"],
+          },
+          description:
+            "Specific event fields to include. Include all enum values if the user does not ask for specific fields.",
+        },
+        query: {
+          type: Type.STRING,
+          description:
+            "Optional keyword to filter by event title or description.",
+        },
+      },
+      required: ["limit", "date", "fields"],
     },
+  },
 ];
 
-const getMyEventsArgs = z.object({ limit: z.number().int().min(1).max(20).default(10) , date:z.string().refine((date)=> /\d\d-\d\d-\d\d/) });
+
+const getMyEventsArgs = z.object({ limit: z.number().int().min(1).max(20).default(10),query : z.string().optional(), fields : z.enum(["title", "description", "start_date", "end_date", "time", "location"]) , date:z.string().refine((date)=> /\d\d-\d\d-\d\d-\d\d:\d\d/) });
 
 // userId comes from the session, never from the model
 export async function runTool(name: string, args: unknown, userId: string) {
     switch (name) {
         case "get_my_events": {
-            const { limit } = getMyEventsArgs.parse(args ?? {});
+            const parsedData = getMyEventsArgs.parse(args ?? {});
 
             // Actual API Call HERE
             //   return prisma.registration.findMany({
@@ -84,4 +62,12 @@ export async function runTool(name: string, args: unknown, userId: string) {
         default:
             throw new Error("Unknown tool");
     }
+}
+
+
+export const get_my_events = (limit : number, date : string , filter : string , query? : string) => {
+    const [startStrDate,endStrDate] = date.split("->");
+    const [startTime,endTime] = time.split("->");
+    const [startDate,endDate] = [new Date(startStrDate),new Date(endStrDate)];
+
 }

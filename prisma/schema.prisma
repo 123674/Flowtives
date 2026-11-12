@@ -12,7 +12,29 @@ datasource db {
   provider = "postgresql"
 }
 
+model UserDB {
+  userID                      String     @id @default(uuid())
+  event                       EventsDB[]
+  userProfileLoc              String?
+  userNameEncrypted           String
+  userNameEncryptedIv         String
+  userNameEncryptedAuthTag    String
+  userNameEncryptedKeyVersion Int
+  emailEncrypted              String
+  emailEncryptedIv            String
+  emailEncryptedAuthTag       String
+  emailEncryptedKeyVersion    Int
+  emailBlindIndex             String
+  passwordHashed              String
+}
+
 model EventsDB {
-  id String @id @default(@uuid())
-  
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startTime   DateTime @db.Timestamptz(3)
+  endTime     DateTime @db.Timestamptz(3)
+  color       String
+  userId      String
+  user        UserDB   @relation(fields: [userId], references: [userID])
 }
