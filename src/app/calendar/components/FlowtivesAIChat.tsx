@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { ArrowUp, Sparkles, X } from 'lucide-react'
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { ArrowUp, FileUp, Sparkles, X } from 'lucide-react'
 import s from '../calendar.module.css'
 import type { CalEvent } from '../lib'
 
@@ -9,6 +9,7 @@ interface Msg {
   id: number
   role: 'ai' | 'user'
   text: string
+  fileName?: string
   action?: { label: string; title: string; date: string; start: string; end: string }
 }
 
@@ -30,8 +31,10 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, onSuggest }: Pr
   ])
   const [text, setText] = useState('')
   const [thinking, setThinking] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const nextId = useRef(1)
 
   useEffect(() => {
@@ -49,14 +52,25 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, onSuggest }: Pr
 
   const send = (raw: string) => {
     const value = raw.trim()
-    if (!value || thinking) return
-    setMsgs((m) => [...m, { id: nextId.current++, role: 'user', text: value }])
+    if ((!value && !file) || thinking) return
+    // Both the typed text and the attached file (if any) go out together in one message.
+    setMsgs((m) => [...m, { id: nextId.current++, role: 'user', text: value, fileName: file?.name }])
     setText('')
+    setFile(null)
     setThinking(true)
     window.setTimeout(() => {
       setMsgs((m) => [...m, { id: nextId.current++, role: 'ai', ...demoReply() }])
       setThinking(false)
     }, 650)
+  }
+
+  /** Timetable upload: opens the device file picker and stages the file; it is sent together with the text on Send. */
+  const onFilePicked = (e: ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0]
+    e.target.value = ''
+    if (!picked) return
+    setFile(picked)
+    inputRef.current?.focus()
   }
 
   const submit = (e: FormEvent) => {
@@ -91,6 +105,7 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, onSuggest }: Pr
         <div className={s.aiLog} ref={logRef} role="log" aria-live="polite">
           {msgs.map((m) => (
             <div key={m.id} className={m.role === 'ai' ? s.aiBubble : s.userBubble}>
+              {m.fileName && <div className={s.msgFile}>📎 {m.fileName}</div>}
               {m.text}
               {m.action && (
                 <button
@@ -116,8 +131,27 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, onSuggest }: Pr
         </div>
 
         <form className={s.aiForm} onSubmit={submit}>
+          <input
+            ref={fileRef}
+            type="file"
+            hidden
+            accept="image/*,.pdf,.csv,.xls,.xlsx,.doc,.docx,.txt,.ics"
+            aria-label="Upload timetable"
+            onChange={onFilePicked}
+          />
+          {file && (
+            <div className={s.aiFile}>
+              <span className={s.aiFileName} title={file.name}>📎 {file.name}</span>
+              <button type="button" className={s.aiFileRemove} aria-label="Remove attached file" onClick={() => setFile(null)}>
+                <X size={14} />
+              </button>
+            </div>
+          )}
+          <button type="button" className={s.uploadBtn} aria-label="Upload timetable" title="Upload timetable" disabled={thinking} onClick={() => fileRef.current?.click()}>
+            <FileUp size={18} />
+          </button>
           <input ref={inputRef} type="text" aria-label="Message Flowtives" placeholder="Ask Flowtives to plan…" value={text} onChange={(e) => setText(e.target.value)} />
-          <button type="submit" className={s.sendBtn} aria-label="Send message" disabled={!text.trim() || thinking}>
+          <button type="submit" className={s.sendBtn} aria-label="Send message" disabled={(!text.trim() && !file) || thinking}>
             <ArrowUp size={17} />
           </button>
         </form>
