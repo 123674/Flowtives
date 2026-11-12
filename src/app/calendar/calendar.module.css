@@ -601,7 +601,7 @@
   transition: background 0.15s, border-color 0.15s;
 }
 .chip:hover { background: var(--tint); border-color: var(--violet); }
-.aiForm { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+.aiForm { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
 .aiForm input {
   flex: 1;
   min-width: 0;
@@ -613,6 +613,14 @@
   outline: none;
 }
 .aiForm input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(0, 132, 209, 0.16); }
+.aiFile { flex: 0 0 100%; display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: #f1f4f7; font-size: 13px; }
+.aiFileName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aiFileRemove { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--muted); flex-shrink: 0; }
+.aiFileRemove:hover { background: #e2e8ee; }
+.msgFile { margin-bottom: 4px; font-size: 12px; opacity: 0.85; word-break: break-all; }
+.uploadBtn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; border: 1px solid #cfd7df; background: #fff; color: var(--muted); flex-shrink: 0; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+.uploadBtn:hover:not(:disabled) { background: var(--tint); border-color: var(--violet); color: var(--violet); }
+.uploadBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 .sendBtn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--violet); color: #fff; flex-shrink: 0; transition: background 0.15s; }
 .sendBtn:hover:not(:disabled) { background: #0074bb; }
 .sendBtn:disabled { opacity: 0.45; cursor: not-allowed; }
