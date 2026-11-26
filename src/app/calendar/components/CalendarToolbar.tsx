@@ -3,14 +3,12 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, ChevronRight, CircleUser, CircleHelp, FileText, LayoutDashboard, LogOut, Menu, Search, User, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, CircleHelp, LayoutDashboard, LogOut, Menu, Search, User, X } from 'lucide-react'
 import s from '../calendar.module.css'
 import { fmtRange, fromKey, shortDate, weekLabel, type CalEvent } from '../lib'
 
 /** Where the account-menu links go. Change these once the pages exist. */
-const PROFILE_HREF = '/calendar/profile'
 const ANALYTICS_HREF = '/calendar/analytics'
-const TIMETABLES_HREF = '/calendar/timetables'
 const HELP_HREF = '/calendar/help'
 
 interface Props {
@@ -173,17 +171,9 @@ export default function CalendarToolbar({ weekStart, events, onMenu, onToday, on
               </span>
               <strong>My account</strong>
             </div>
-            <Link href={PROFILE_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
-              <CircleUser size={17} aria-hidden="true" />
-              Profile
-            </Link>
             <Link href={ANALYTICS_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
               <LayoutDashboard size={17} aria-hidden="true" />
               Analytics dashboard
-            </Link>
-            <Link href={TIMETABLES_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
-              <FileText size={17} aria-hidden="true" />
-              Uploaded timetables
             </Link>
             <div className={s.accountDivider} />
             <Link href={HELP_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
