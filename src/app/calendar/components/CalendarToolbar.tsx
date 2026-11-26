@@ -8,7 +8,7 @@ import s from '../calendar.module.css'
 import { fmtRange, fromKey, shortDate, weekLabel, type CalEvent } from '../lib'
 
 /** Where the account-menu links go. Change these once the pages exist. */
-const ANALYTICS_HREF = '/calendar/analytics'
+const ANALYTICS_HREF = '/analytics'
 const HELP_HREF = '/calendar/help'
 
 interface Props {
