@@ -12,12 +12,10 @@ interface Props {
   col: number
   cols: number
   highlight: boolean
-  dragging: boolean
   onClick: () => void
-  onPointerDown: (e: PointerEvent<HTMLButtonElement>) => void
 }
 
-export default function EventCard({ ev, top, height, col, cols, highlight, dragging, onClick, onPointerDown }: Props) {
+export default function EventCard({ ev, top, height, col, cols, highlight, onClick }: Props) {
   const style: CSSProperties = {
     top,
     height,
@@ -89,7 +87,7 @@ export default function EventCard({ ev, top, height, col, cols, highlight, dragg
   }, [tipOpen, hideTip])
 
   const onEnter = (e: PointerEvent<HTMLButtonElement>) => {
-    if (e.pointerType === 'touch' || dragging) return
+    if (e.pointerType === 'touch') return
     clearTimer()
     timer.current = window.setTimeout(() => setTipOpen(true), 250)
   }
@@ -102,16 +100,13 @@ export default function EventCard({ ev, top, height, col, cols, highlight, dragg
     <button
       ref={btnRef}
       type="button"
-      className={`${s.event} ${s['ev_' + ev.color]} ${highlight ? s.eventHighlight : ''} ${dragging ? s.eventDragging : ''}`}
+      className={`${s.event} ${s['ev_' + ev.color]} ${highlight ? s.eventHighlight : ''}`}
       style={style}
       onClick={() => {
         hideTip()
         onClick()
       }}
-      onPointerDown={(e) => {
-        hideTip()
-        onPointerDown(e)
-      }}
+      onPointerDown={hideTip}
       onPointerEnter={onEnter}
       onPointerLeave={hideTip}
       onFocus={onFocus}

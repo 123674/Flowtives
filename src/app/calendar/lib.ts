@@ -111,32 +111,3 @@ export function layoutDay(evs: CalEvent[]): Laid[] {
   flush()
   return out
 }
-
-/* ---------- local demo helper for the chat panel ---------- */
-export function findFreeSlot(
-  events: CalEvent[],
-  weekStart: Date,
-  minutes: number,
-  nowTs: number,
-): { date: string; start: string; end: string } | null {
-  const now = new Date(nowTs)
-  const todayKey = toKey(now)
-  const nowMin = now.getHours() * 60 + now.getMinutes()
-  const DAY_START = 9 * 60
-  const DAY_END = 20 * 60
-  for (let i = 0; i < 7; i++) {
-    const key = toKey(addDays(weekStart, i))
-    if (key < todayKey) continue
-    let cursor = key === todayKey ? Math.max(DAY_START, Math.ceil((nowMin + 15) / 30) * 30) : DAY_START
-    const day = events
-      .filter((e) => e.date === key)
-      .map((e) => [toMin(e.start), toMin(e.end)] as const)
-      .sort((a, b) => a[0] - b[0])
-    for (const [s, e] of day) {
-      if (s - cursor >= minutes) break
-      cursor = Math.max(cursor, e)
-    }
-    if (cursor + minutes <= DAY_END) return { date: key, start: fromMin(cursor), end: fromMin(cursor + minutes) }
-  }
-  return null
-}

@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, Coffee, FileText, Heart, ListPlus, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Check, Clock3, CloudUpload, FileText, Menu, MessageCircle, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
-import Faq from './components/Faq'
+import Image from 'next/image'
+import yourDayImage from './components/ftv.jpg'
+import featureImage from './components/ftv2.png'
+import studentImage from './components/ftv3.png'
 
 const plans = [
   { time: '05:00 PM', title: 'Badminton', detail: 'Move your body · 60 min', color: 'mint', icon: '🏸' },
@@ -11,15 +14,71 @@ const plans = [
   { time: '07:00 PM', title: 'Dinner + reset', detail: 'Take a proper break · 45 min', color: 'peach', icon: '🍜' },
 ]
 
+const stories = [
+  {
+    label: 'YOUR DAY, YOUR CALL',
+    title: 'Shape a day that works for you.',
+    description: 'Start with a thoughtful plan, then make it your own.',
+    image: yourDayImage,
+    alt: 'Flowtives AI planning chat open on a phone.',
+  },
+  {
+    label: 'BUILT AROUND REAL LIFE',
+    title: 'More than a calendar.',
+    description: 'Make space for classes, priorities, and everything else.',
+    image: featureImage,
+    alt: 'Flowtives class schedule displayed in a classroom.',
+  },
+  {
+    label: 'MADE FOR STUDENTS',
+    title: 'College is more than class.',
+    description: 'Make room for life outside class and time to recharge.',
+    image: studentImage,
+    alt: 'Flowtives weekly calendar displayed in a classroom.',
+  },
+]
+
 export default function Home() {
   const [showUpload, setShowUpload] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [fileName, setFileName] = useState('')
   const [toast, setToast] = useState(false)
+  const [slideIndex, setSlideIndex] = useState(1)
+  const [slideTransition, setSlideTransition] = useState(true)
+  const [autoPlay, setAutoPlay] = useState(true)
+  const resumeAutoPlay = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!autoPlay) return
+
+    const timer = window.setTimeout(() => setSlideIndex((index) => index + 1), 7000)
+    return () => window.clearTimeout(timer)
+  }, [autoPlay, slideIndex])
+
+  useEffect(() => () => {
+    if (resumeAutoPlay.current) window.clearTimeout(resumeAutoPlay.current)
+  }, [])
+
+  const manuallyNavigate = (index: number) => {
+    setAutoPlay(false)
+    if (resumeAutoPlay.current) window.clearTimeout(resumeAutoPlay.current)
+    resumeAutoPlay.current = window.setTimeout(() => setAutoPlay(true), 10000)
+    setSlideIndex(index)
+  }
+
+  const handleSlideTransitionEnd = () => {
+    if (slideIndex === stories.length + 1 || slideIndex === 0) {
+      setSlideTransition(false)
+      setSlideIndex(slideIndex === 0 ? stories.length : 1)
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => setSlideTransition(true))
+      })
+    }
+  }
 
   const startPlanning = () => {
     setShowUpload(true)
-    document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   return (
@@ -30,7 +89,6 @@ export default function Home() {
         <Link className="wordmark" href="#top" aria-label="Flowtives home">Flowtives</Link>
         <nav className={`${menuOpen ? 'nav-links nav-links-open' : 'nav-links'}`}>
           <Link href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</Link>
-          <Link href="#your-day" onClick={() => setMenuOpen(false)}>Your day</Link>
           <Link href="#features" onClick={() => setMenuOpen(false)}>Features</Link>
         </nav>
         <div className="nav-actions"><Link className="nav-login" href="/signin">Sign in</Link><button className="nav-cta" onClick={startPlanning}>Try Flowtives <ArrowUpRight size={15}/></button></div>
@@ -74,51 +132,43 @@ export default function Home() {
       <div className="bottom-fade" aria-hidden="true"/>
       <section className="below-fold landing-section how-section" id="how-it-works"><div className="section-label">LESS PLANNING. MORE LIVING.</div><h2>Your schedule should work for you.</h2><p>Drop in your timetable, tell Flowtives what matters, and let AI shape a realistic day around it.</p><div className="feature-row"><article><span className="step-number">1</span><div className="feature-icon"><FileText size={19}/></div><h3>Give it the details</h3><p>Upload your class timetable and add the things you want to make time for.</p></article><article><span className="step-number">2</span><div className="feature-icon"><Sparkles size={19}/></div><h3>Let AI connect the dots</h3><p>Flowtives builds a balanced plan with study blocks, breaks, and your life outside class.</p></article><article><span className="step-number">3</span><div className="feature-icon"><MessageCircle size={19}/></div><h3>Change plans, easily</h3><p>Tell your AI what changed. Your calendar reshuffles without the stress.</p></article></div></section>
 
-      <section className="landing-section your-day-section" id="your-day">
-        <div className="day-layout">
-          <div className="day-copy">
-            <div className="section-label">A PLAN THAT CAN FLEX</div>
-            <h2>Your day, your call.</h2>
-            <p>Start with a thoughtful plan, then shape it around what actually works for you.</p>
-            <ul className="reassurance-list">
-              <li><Check size={16}/> Change or remove any task</li>
-              <li><Check size={16}/> Add the things you care about</li>
-              <li><Check size={16}/> Keep breaks and downtime in view</li>
-            </ul>
+      <section className="landing-section story-section" id="your-day" aria-label="Flowtives in real life">
+        <div className="section-label">A PLAN THAT CAN FLEX</div>
+        <h2>A little more room for life.</h2>
+        <div className="story-carousel" id="features" aria-roledescription="carousel" aria-label="Flowtives in real life">
+          <div className="story-track"
+            style={{ transform: `translateX(-${slideIndex * 20}%)`, transition: slideTransition ? undefined : 'none' }}
+            onTransitionEnd={handleSlideTransitionEnd}>
+            {[stories[stories.length - 1], ...stories, stories[0]].map((story, index) => {
+              const isClone = index === 0 || index === stories.length + 1
+              const isPortrait = story.image === yourDayImage
+              return (
+                <article className={`story-slide${index === 2 ? ' story-slide-reversed' : ''}`} key={`${story.label}-${index}`} aria-hidden={isClone}>
+                  <div className={`story-image-frame${isPortrait ? ' story-image-portrait' : ''}`}>
+                    <Image src={story.image} alt={isClone ? '' : story.alt}/>
+                  </div>
+                  <div className="story-copy">
+                    <div className="section-label">{story.label}</div>
+                    <h3>{story.title}</h3>
+                    <p>{story.description}</p>
+                  </div>
+                </article>
+              )
+            })}
           </div>
         </div>
-      </section>
-
-      <section className="landing-section feature-section" id="features">
-        <div className="section-label">BUILT AROUND REAL LIFE</div>
-        <h2>More than a calendar.</h2>
-        <p className="section-description">A flexible plan that makes space for classes, priorities, and everything else.</p>
-        <div className="feature-grid">
-          <article><div className="feature-icon"><CalendarDays size={19}/></div><h3>Schedule around classes</h3><p>Build your day around the timetable you already have.</p></article>
-          <article><div className="feature-icon"><Coffee size={19}/></div><h3>Study, then reset</h3><p>Make room for focused study blocks and proper breaks.</p></article>
-          <article><div className="feature-icon"><MessageCircle size={19}/></div><h3>Edit by chatting</h3><p>Explain what changed and reshape your plan in a few words.</p></article>
-          <article><div className="feature-icon"><ListPlus size={19}/></div><h3>Make it yours</h3><p>Add, remove, or reshuffle tasks when your priorities shift.</p></article>
-          <article><div className="feature-icon"><Heart size={19}/></div><h3>Balance energy and downtime</h3><p>Plan for your energy, not just an endless list of tasks.</p></article>
-          <article><div className="feature-icon"><FileText size={19}/></div><h3>Use the timetable you have</h3><p>Upload a PDF, image, or spreadsheet to get started.</p></article>
+        <div className="story-controls">
+          <button className="story-arrow" aria-label="Previous slide" onClick={() => manuallyNavigate(slideIndex - 1)}><ArrowLeft size={17}/></button>
+          <div className="story-dots" aria-label="Choose a slide">
+            {stories.map((story, index) => (
+              <button key={story.label} className={`story-dot${(slideIndex - 1 + stories.length) % stories.length === index ? ' story-dot-active' : ''}`} aria-label={`Go to slide ${index + 1}: ${story.title}`} aria-current={(slideIndex - 1 + stories.length) % stories.length === index ? 'true' : undefined} onClick={() => manuallyNavigate(index + 1)}/>
+            ))}
+          </div>
+          <button className="story-arrow" aria-label="Next slide" onClick={() => manuallyNavigate(slideIndex + 1)}><ArrowRight size={17}/></button>
         </div>
       </section>
 
-      <section className="landing-section students-section">
-        <div className="section-label">MADE FOR STUDENTS</div>
-        <h2>College is more than class.</h2>
-        <div className="students-grid">
-          {/* // TODO(me): Replace these placeholder statements with approved student-focused copy. */}
-          <article className="stat-card"><h3>Make room for your people.</h3><p>Your schedule should leave space for life outside class.</p></article>
-          <article className="stat-card"><h3>Protect time to recharge.</h3><p>Rest belongs in a realistic plan, too.</p></article>
-          <article className="stat-card"><h3>Keep your own priorities close.</h3><p>Build a week that reflects what matters to you.</p></article>
-        </div>
-      </section>
 
-      <section className="landing-section faq-section" id="faq">
-        <div className="section-label">FAQs</div>
-        <h2>A few things to know.</h2>
-        <Faq />
-      </section>
 
       <section className="landing-section cta-band">
         <h2>Make time for what matters.</h2>

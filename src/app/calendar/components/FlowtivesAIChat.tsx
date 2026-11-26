@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { ArrowUp, Sparkles, X } from 'lucide-react'
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { ArrowUp, FileUp, Sparkles, X } from 'lucide-react'
 import s from '../calendar.module.css'
-import { addDays, findFreeSlot, fmtRange, fromKey, shortDate, toKey, type CalEvent } from '../lib'
+import type { CalEvent } from '../lib'
 
 interface Msg {
   id: number
   role: 'ai' | 'user'
   text: string
+  fileName?: string
   action?: { label: string; title: string; date: string; start: string; end: string }
 }
 
@@ -24,14 +25,16 @@ interface Props {
   onSuggest: (d: { title: string; date: string; start: string; end: string }) => void
 }
 
-export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekStart, nowTs, onSuggest }: Props) {
+export default function FlowtivesAIChat({ open, onOpen, onClose, onSuggest }: Props) {
   const [msgs, setMsgs] = useState<Msg[]>([
     { id: 0, role: 'ai', text: 'Let’s make your week work for you. What would you like to plan?' },
   ])
   const [text, setText] = useState('')
   const [thinking, setThinking] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const nextId = useRef(1)
 
   useEffect(() => {
@@ -42,41 +45,32 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekSta
     if (open) inputRef.current?.focus()
   }, [open])
 
-  /** Local demo behaviour only: simple keyword rules over the events already on screen. */
-  const demoReply = (input: string): Omit<Msg, 'id' | 'role'> => {
-    const t = input.toLowerCase()
-    const slotReply = (minutes: number, title: string, lead: string) => {
-      const slot = findFreeSlot(events, weekStart, minutes, nowTs)
-      if (!slot) return { text: 'I couldn’t find an open window between 9 AM and 8 PM this week.' }
-      return {
-        text: `${lead} ${shortDate(fromKey(slot.date))}, ${fmtRange(slot.start, slot.end)}.`,
-        action: { label: `Add “${title}”`, title, ...slot },
-      }
-    }
-    if (/study|focus|time/.test(t)) return slotReply(90, 'Study block', 'The first open 90-minute window this week is')
-    if (/break|room|rest/.test(t)) return slotReply(30, 'Break', 'There’s space for a 30-minute break on')
-    if (/week|plan/.test(t)) {
-      const keys = Array.from({ length: 7 }, (_, i) => toKey(addDays(weekStart, i)))
-      const inWeek = events.filter((e) => keys.includes(e.date))
-      if (!inWeek.length) return { text: 'This week is wide open. Add a few events and I can point out where to fit study time.' }
-      const counts = keys.map((k) => inWeek.filter((e) => e.date === k).length)
-      const busiest = keys[counts.indexOf(Math.max(...counts))]
-      return { text: `You have ${inWeek.length} event${inWeek.length === 1 ? '' : 's'} this week, busiest on ${shortDate(fromKey(busiest))}. Ask me to find study time or a break and I’ll look for a gap.` }
-    }
-    if (/task|organi[sz]e|todo/.test(t)) return { text: 'Task lists are coming soon. For now, create an event for each task and I can find gaps around them.' }
-    return { text: 'This preview can look for study time, breaks, and give a quick overview of your week. Try one of the suggestions.' }
-  }
+  /** Placeholder reply until the AI API is connected. */
+  const demoReply = (): Omit<Msg, 'id' | 'role'> => ({
+    text: 'The AI planner isn’t connected yet. Once the API is attached, I’ll be able to help plan your week.',
+  })
 
   const send = (raw: string) => {
     const value = raw.trim()
-    if (!value || thinking) return
-    setMsgs((m) => [...m, { id: nextId.current++, role: 'user', text: value }])
+    if ((!value && !file) || thinking) return
+    // Both the typed text and the attached file (if any) go out together in one message.
+    setMsgs((m) => [...m, { id: nextId.current++, role: 'user', text: value, fileName: file?.name }])
     setText('')
+    setFile(null)
     setThinking(true)
     window.setTimeout(() => {
-      setMsgs((m) => [...m, { id: nextId.current++, role: 'ai', ...demoReply(value) }])
+      setMsgs((m) => [...m, { id: nextId.current++, role: 'ai', ...demoReply() }])
       setThinking(false)
     }, 650)
+  }
+
+  /** Timetable upload: opens the device file picker and stages the file; it is sent together with the text on Send. */
+  const onFilePicked = (e: ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0]
+    e.target.value = ''
+    if (!picked) return
+    setFile(picked)
+    inputRef.current?.focus()
   }
 
   const submit = (e: FormEvent) => {
@@ -101,7 +95,7 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekSta
           </span>
           <div className={s.aiHeadText}>
             <h2>Plan with Flowtives</h2>
-            <small>Demo preview · replies are local examples</small>
+            <small>Waiting for AI API connection</small>
           </div>
           <button type="button" className={s.iconBtn} aria-label="Close planner" onClick={onClose}>
             <X size={18} />
@@ -111,6 +105,7 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekSta
         <div className={s.aiLog} ref={logRef} role="log" aria-live="polite">
           {msgs.map((m) => (
             <div key={m.id} className={m.role === 'ai' ? s.aiBubble : s.userBubble}>
+              {m.fileName && <div className={s.msgFile}>📎 {m.fileName}</div>}
               {m.text}
               {m.action && (
                 <button
@@ -136,8 +131,27 @@ export default function FlowtivesAIChat({ open, onOpen, onClose, events, weekSta
         </div>
 
         <form className={s.aiForm} onSubmit={submit}>
+          <input
+            ref={fileRef}
+            type="file"
+            hidden
+            accept="image/*,.pdf,.csv,.xls,.xlsx,.doc,.docx,.txt,.ics"
+            aria-label="Upload timetable"
+            onChange={onFilePicked}
+          />
+          {file && (
+            <div className={s.aiFile}>
+              <span className={s.aiFileName} title={file.name}>📎 {file.name}</span>
+              <button type="button" className={s.aiFileRemove} aria-label="Remove attached file" onClick={() => setFile(null)}>
+                <X size={14} />
+              </button>
+            </div>
+          )}
+          <button type="button" className={s.uploadBtn} aria-label="Upload timetable" title="Upload timetable" disabled={thinking} onClick={() => fileRef.current?.click()}>
+            <FileUp size={18} />
+          </button>
           <input ref={inputRef} type="text" aria-label="Message Flowtives" placeholder="Ask Flowtives to plan…" value={text} onChange={(e) => setText(e.target.value)} />
-          <button type="submit" className={s.sendBtn} aria-label="Send message" disabled={!text.trim() || thinking}>
+          <button type="submit" className={s.sendBtn} aria-label="Send message" disabled={(!text.trim() && !file) || thinking}>
             <ArrowUp size={17} />
           </button>
         </form>
