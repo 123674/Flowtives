@@ -45,6 +45,9 @@ export default function CalendarToolbar({ weekStart, events, onMenu, onToday, on
       <Link href="/" className={s.wordmark} aria-label="Flowtives home">
         Flowtives
       </Link>
+      <nav className={s.pageNav} aria-label="Main navigation">
+        <span aria-current="page">Calendar</span>
+      </nav>
       <button type="button" className={s.todayBtn} onClick={onToday}>
         Today
       </button>
@@ -59,7 +62,6 @@ export default function CalendarToolbar({ weekStart, events, onMenu, onToday, on
       <h1 className={s.monthTitle} aria-live="polite">
         {weekLabel(weekStart)}
       </h1>
-
       <div
         className={`${s.search} ${open ? s.searchOpen : ''}`}
         onBlur={(e) => {
