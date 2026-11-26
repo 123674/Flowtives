@@ -125,6 +125,6 @@ export function parseTimetableResponse(raw: string): TimetableSlot[] {
     }
   }
 
-  if (!slots.length) throw new Error("No readable classes were found in the timetable.");
+  // A clean read with no classes is a valid answer (e.g. a blank timetable).
   return slots;
 }

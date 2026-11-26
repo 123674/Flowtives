@@ -134,6 +134,7 @@ async function runGemini({ message, history, events, today, timeZone }: RequestD
       config: {
         systemInstruction: systemInstruction(today, timeZone),
         maxOutputTokens: 1000,
+        httpOptions: { timeout: 30_000 },
         tools: [{ functionDeclarations }],
       },
     });

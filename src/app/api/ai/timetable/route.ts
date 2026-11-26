@@ -41,9 +41,9 @@ async function runOpenRouter(base64: string, mimeType: string, filename: string)
     messages,
     ...(mimeType === "application/pdf" ? { plugins: [{ id: "file-parser", pdf: { engine: "cloudflare-ai" } }] } : {}),
     response_format: { type: "json_object" },
-    max_tokens: 2500,
+    max_tokens: 2000,
     temperature: 0,
-  });
+  }, { timeout: 60_000 });
 
   const text = completion.choices[0]?.message?.content;
   if (!text) throw new Error("OpenRouter returned no timetable.");
@@ -58,6 +58,7 @@ async function runGemini(base64: string, mimeType: string): Promise<TimetableSlo
       responseMimeType: "application/json",
       maxOutputTokens: 4096,
       temperature: 0,
+      httpOptions: { timeout: 30_000 },
     },
   });
 
