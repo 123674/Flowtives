@@ -10,6 +10,7 @@ import FlowtivesAIChat from './components/FlowtivesAIChat'
 import WeekGrid from './components/WeekGrid'
 import { addDays, fromKey, fromMin, startOfDay, startOfWeek, toKey, toMin, type CalEvent, type Draft } from './lib'
 import { clock, eventStore } from './store'
+import type { TimetableSlot } from '@/lib/timetable'
 
 type Modal = { kind: 'form'; draft: Draft } | { kind: 'view'; id: string } | null
 
@@ -61,6 +62,39 @@ export default function CalendarPage() {
     setFocusReq((p) => ({ minutes: toMin(ev.start), n: (p?.n ?? 0) + 1 }))
     setHighlightId(ev.id)
     window.setTimeout(() => setHighlightId(null), 2600)
+  }
+
+  // A timetable repeats weekly on the matching weekdays. Store concrete events
+  // for the next 8 weeks so they work with the existing week grid and AI tools.
+  const importTimetable = (slots: TimetableSlot[]): string => {
+    const groupId = `timetable-${Date.now()}`
+    const weekStart = startOfWeek(today)
+    const todayKey = toKey(today)
+    const created: CalEvent[] = []
+
+    slots.forEach((slot, index) => {
+      for (let week = 0; week < 8; week += 1) {
+        const date = toKey(addDays(weekStart, week * 7 + slot.weekday))
+        if (date < todayKey) continue
+        created.push({
+          id: `${groupId}-${index}-${week}`,
+          title: slot.title,
+          date,
+          start: slot.start,
+          end: slot.end,
+          description: slot.description,
+          color: slot.color,
+        })
+      }
+    })
+
+    eventStore.set([...events.filter((e) => !e.id.startsWith('timetable-')), ...created])
+    setSelected(weekStart)
+    return groupId
+  }
+
+  const undoImport = (groupId: string) => {
+    eventStore.set(events.filter((e) => !e.id.startsWith(`${groupId}-`)))
   }
 
   const viewing = modal?.kind === 'view' ? events.find((e) => e.id === modal.id) : undefined
@@ -116,9 +150,9 @@ export default function CalendarPage() {
         onOpen={() => setChatOpen(true)}
         onClose={() => setChatOpen(false)}
         events={events}
-        weekStart={weekStart}
-        nowTs={nowTs}
-        onSuggest={(d) => setModal({ kind: 'form', draft: { ...blankDraft(d.date, d.start, d.end), title: d.title, color: 'mint' } })}
+        onSuggest={(draft) => setModal({ kind: 'form', draft })}
+        onImport={importTimetable}
+        onUndoImport={undoImport}
       />
 
       {modal?.kind === 'form' && (
