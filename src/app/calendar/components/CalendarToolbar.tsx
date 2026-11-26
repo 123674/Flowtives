@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Menu, Search, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ChevronLeft, ChevronRight, CircleHelp, LayoutDashboard, LogOut, Menu, Search, User, X } from 'lucide-react'
 import s from '../calendar.module.css'
 import { fmtRange, fromKey, shortDate, weekLabel, type CalEvent } from '../lib'
+
+/** Where the account-menu links go. Change these once the pages exist. */
+const ANALYTICS_HREF = '/calendar/analytics'
+const HELP_HREF = '/calendar/help'
 
 interface Props {
   weekStart: Date
@@ -18,7 +23,9 @@ interface Props {
 export default function CalendarToolbar({ weekStart, events, onMenu, onToday, onShift, onPick }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [accountOpen, setAccountOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     if (open) inputRef.current?.focus()
@@ -35,6 +42,16 @@ export default function CalendarToolbar({ weekStart, events, onMenu, onToday, on
   const close = () => {
     setOpen(false)
     setQuery('')
+  }
+
+  const signOut = () => {
+    try {
+      localStorage.removeItem('access_token')
+    } catch {
+      /* storage unavailable: nothing to clear */
+    }
+    setAccountOpen(false)
+    router.push('/')
   }
 
   return (
@@ -123,6 +140,51 @@ export default function CalendarToolbar({ weekStart, events, onMenu, onToday, on
                 ))}
               </ul>
             )}
+          </div>
+        )}
+      </div>
+
+      <div
+        className={s.account}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setAccountOpen(false)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setAccountOpen(false)
+        }}
+      >
+        <button
+          type="button"
+          className={s.avatarBtn}
+          aria-label="Account menu"
+          aria-haspopup="menu"
+          aria-expanded={accountOpen}
+          onClick={() => setAccountOpen((v) => !v)}
+        >
+          <User size={18} />
+        </button>
+        {accountOpen && (
+          <div className={s.accountMenu} role="menu">
+            <div className={s.accountHead}>
+              <span className={s.avatarLg} aria-hidden="true">
+                <User size={20} />
+              </span>
+              <strong>My account</strong>
+            </div>
+            <Link href={ANALYTICS_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
+              <LayoutDashboard size={17} aria-hidden="true" />
+              Analytics dashboard
+            </Link>
+            <div className={s.accountDivider} />
+            <Link href={HELP_HREF} className={s.accountItem} role="menuitem" onClick={() => setAccountOpen(false)}>
+              <CircleHelp size={17} aria-hidden="true" />
+              Help &amp; feedback
+            </Link>
+            <div className={s.accountDivider} />
+            <button type="button" className={s.accountItem} role="menuitem" onClick={signOut}>
+              <LogOut size={17} aria-hidden="true" />
+              Sign out
+            </button>
           </div>
         )}
       </div>

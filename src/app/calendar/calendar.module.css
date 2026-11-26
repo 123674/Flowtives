@@ -183,6 +183,52 @@
 .resultDesc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .resultGo { font-size: 12px; font-weight: 600; color: var(--violet); white-space: nowrap; }
 
+/* account menu */
+.account { position: relative; display: flex; align-items: center; margin-left: 4px; }
+.avatarBtn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #cfd7df;
+  background: var(--tint);
+  color: var(--violet);
+  flex-shrink: 0;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.avatarBtn:hover, .avatarBtn[aria-expanded='true'] { box-shadow: 0 0 0 3px rgba(0, 132, 209, 0.18); }
+.accountMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 248px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgba(30, 48, 64, 0.14);
+  z-index: 30;
+}
+.accountHead { display: flex; align-items: center; gap: 10px; padding: 10px; font-size: 14px; }
+.avatarLg { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--tint); color: var(--violet); }
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  text-decoration: none;
+}
+.accountItem:hover { background: #f4f5fb; }
+.accountItem svg { color: var(--muted); flex-shrink: 0; }
+.accountDivider { height: 1px; margin: 4px 6px; background: var(--line); }
+
 /* ---------- body / sidebar ---------- */
 .body { flex: 1; min-height: 0; display: flex; }
 .sidebar {
@@ -670,6 +716,7 @@
   .navBtns { margin: 0; }
   .monthTitle { font-size: 16px; flex: 1; min-width: 0; letter-spacing: -0.2px; }
   .search { margin-left: 0; }
+  .account { margin-left: 0; }
   .searchOpen { position: absolute; inset: 0; padding: 0 8px; background: #f7f9fc; z-index: 25; }
   .searchOpen .searchBox { flex: 1; width: auto; }
   .results { top: 100%; left: 8px; right: 8px; width: auto; }
@@ -753,6 +800,7 @@
 /* narrow phones: keep Today, arrows, month, search and menu on one row */
 @media (max-width: 400px) {
   .navBtns .iconBtn, .menuBtn, .search > .iconBtn { width: 32px; height: 32px; }
+  .avatarBtn { width: 34px; height: 34px; }
   .todayBtn { padding: 0 10px; }
   .monthTitle { font-size: 15px; }
 }
